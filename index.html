@@ -3,487 +3,897 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nikita Taskin | Operations & Tech</title>
+    <title>Nikita Taskin | Project & Operations Coordinator</title>
     
-    <!-- Unique Fonts: Bebas Neue for massive impact, Manrope for high readability -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- Bebas Neue: impact headers | DM Serif Display: editorial italic accents | Manrope: refined body -->
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=Manrope:wght@300;400;600;800&display=swap" rel="stylesheet">
 
     <style>
-        /* CSS Variables for Cohesive Theme */
         :root {
-            --bg-color: #0a0a0a;
-            --text-main: #f4f4f0;
-            --text-muted: #888888;
-            --accent: #ccff00; /* Neon Chartreuse for high-tech/energy feel */
-            --border-color: rgba(255, 255, 255, 0.1);
+            --bg:         #080808;
+            --bg-2:       #111111;
+            --text:       #f0ede8;
+            --muted:      #6b6b6b;
+            --accent:     #c8f000;
+            --accent-dim: rgba(200,240,0,0.08);
+            --border:     rgba(255,255,255,0.1);
+            --nav-h:      64px;
         }
 
-        /* Reset & Base Setup */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            cursor: none; /* Hide default cursor for custom one */
-        }
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+        html { scroll-behavior: smooth; }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
+            background: var(--bg);
+            color: var(--text);
             font-family: 'Manrope', sans-serif;
             overflow-x: hidden;
-            line-height: 1.6;
+            cursor: none;
+            font-display: swap;
         }
 
-        /* Noise Texture Overlay */
-        .noise::before {
-            content: "";
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
+        /* ─── GRAIN OVERLAY ─── */
+        body::after {
+            content: '';
+            position: fixed; inset: 0;
             pointer-events: none;
-            z-index: 50;
-            opacity: 0.04;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            z-index: 100;
+            opacity: .03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
         }
 
-        /* Custom Cursor */
-        .cursor-dot, .cursor-outline {
-            position: fixed;
-            top: 0; left: 0;
-            transform: translate(-50%, -50%);
+        /* ─── CUSTOM CURSOR ─── */
+        #c-dot, #c-ring {
+            position: fixed; top:0; left:0;
             border-radius: 50%;
-            z-index: 9999;
             pointer-events: none;
+            z-index: 9999;
+            will-change: transform;
+            transform: translate(-50%,-50%);
         }
-        .cursor-dot {
-            width: 8px; height: 8px;
-            background-color: var(--accent);
+        #c-dot {
+            width: 6px; height: 6px;
+            background: var(--accent);
+            transition: transform .15s;
         }
-        .cursor-outline {
-            width: 40px; height: 40px;
-            border: 1px solid var(--accent);
-            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        #c-ring {
+            width: 36px; height: 36px;
+            border: 1.5px solid var(--accent);
+            opacity: .6;
+            transition: width .25s, height .25s, opacity .25s, background .25s;
         }
-        /* Hover state for links */
-        body.hovering .cursor-outline {
-            width: 60px; height: 60px;
-            background-color: rgba(204, 255, 0, 0.1);
-            border-color: transparent;
-        }
+        body.cursor-hover #c-dot { transform: translate(-50%,-50%) scale(2); }
+        body.cursor-hover #c-ring { width:56px; height:56px; opacity:.2; background: var(--accent); }
 
-        /* Typography */
-        h1, h2, h3 {
-            font-family: 'Bebas Neue', sans-serif;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: normal;
-        }
-
-        a {
-            color: var(--text-main);
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-        a:hover {
-            color: var(--accent);
-        }
-
-        /* Layout */
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 5vw;
-        }
-
-        header {
-            min-height: 100vh;
+        /* ─── STICKY NAV ─── */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: var(--nav-h);
+            z-index: 500;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
-            position: relative;
-            padding-top: 10vh;
-        }
-
-        /* Hero Typography */
-        .hero-name {
-            font-size: clamp(4rem, 15vw, 12rem);
-            line-height: 0.85;
-            color: var(--text-main);
-            margin-bottom: 2rem;
-        }
-        .hero-name span {
-            display: block;
-        }
-        .hero-name .accent-text {
-            color: var(--accent);
-            padding-left: 10vw;
-        }
-
-        .hero-meta {
-            display: flex;
+            align-items: center;
             justify-content: space-between;
-            align-items: flex-end;
-            margin-top: 4rem;
-            border-top: 1px solid var(--border-color);
-            padding-top: 2rem;
-            flex-wrap: wrap;
-            gap: 2rem;
+            padding: 0 5vw;
+            background: rgba(8,8,8,.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid transparent;
+            transition: border-color .3s;
         }
-
-        .meta-item p {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 0.5rem;
-        }
-        .meta-item h4 {
+        nav.scrolled { border-color: var(--border); }
+        .nav-logo {
+            font-family: 'Bebas Neue', sans-serif;
             font-size: 1.5rem;
-            font-family: 'Manrope', sans-serif;
-            font-weight: 400;
+            letter-spacing: 2px;
+            color: var(--text);
         }
-
-        /* Summary Section */
-        .section {
-            padding: 15vh 0;
-            border-top: 1px solid var(--border-color);
-        }
-        
-        .section-title {
-            font-size: clamp(2rem, 5vw, 4rem);
-            color: var(--accent);
-            margin-bottom: 4rem;
-        }
-
-        .summary-text {
-            font-size: clamp(1.2rem, 3vw, 2.5rem);
-            line-height: 1.4;
-            max-width: 1000px;
-            font-weight: 300;
-        }
-
-        /* Experience Grid */
-        .job {
-            display: grid;
-            grid-template-columns: 1fr 3fr;
-            gap: 2rem;
-            padding: 4rem 0;
-            border-bottom: 1px solid var(--border-color);
-            transition: all 0.3s ease;
-        }
-        .job:hover {
-            background: linear-gradient(90deg, rgba(204,255,0,0.03) 0%, transparent 100%);
-            padding-left: 2rem; /* Indent effect on hover */
-        }
-
-        .job-meta h3 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-        }
-        .job-meta p {
-            color: var(--text-muted);
-            font-size: 1.1rem;
-        }
-        .job-details ul {
+        .nav-logo span { color: var(--accent); }
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
             list-style: none;
         }
-        .job-details li {
-            position: relative;
-            padding-left: 1.5rem;
-            margin-bottom: 1rem;
-            font-size: 1.1rem;
-            color: #d1d1d1;
+        .nav-links a {
+            font-size: .8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--muted);
+            text-decoration: none;
+            transition: color .2s;
+            font-weight: 600;
         }
-        .job-details li::before {
-            content: "→";
+        .nav-links a:hover { color: var(--accent); }
+        .nav-cta {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            color: var(--bg);
+            background: var(--accent);
+            padding: .4rem 1.2rem;
+            text-decoration: none;
+            transition: opacity .2s;
+        }
+        .nav-cta:hover { opacity: .8; }
+
+        /* ─── LAYOUT ─── */
+        .wrap { max-width: 1400px; margin: 0 auto; padding: 0 5vw; }
+        section { padding: 12vh 0; }
+        section + section { border-top: 1px solid var(--border); }
+
+        /* ─── HERO ─── */
+        header {
+            min-height: 100vh;
+            padding-top: var(--nav-h);
+            display: flex;
+            align-items: center;
+        }
+        .hero-inner { width: 100%; }
+
+        .hero-eyebrow {
+            font-size: .85rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeUp .7s .2s forwards;
+        }
+        .hero-name {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(4rem, 13vw, 11rem);
+            line-height: .88;
+            color: var(--text);
+            opacity: 0;
+            animation: fadeUp .8s .35s forwards;
+        }
+        .hero-name em {
+            font-family: 'DM Serif Display', serif;
+            font-style: italic;
+            color: var(--accent);
+        }
+        .hero-tagline {
+            font-size: clamp(1.2rem, 3vw, 2.2rem);
+            font-weight: 300;
+            color: var(--muted);
+            max-width: 700px;
+            margin-top: 2rem;
+            line-height: 1.5;
+            opacity: 0;
+            animation: fadeUp .8s .5s forwards;
+        }
+        .hero-tagline strong { color: var(--text); font-weight: 600; }
+
+        .hero-bar {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+            margin-top: 6rem;
+            border-top: 1px solid var(--border);
+            padding-top: 2.5rem;
+            opacity: 0;
+            animation: fadeUp .8s .65s forwards;
+        }
+        .hero-bar-item p {
+            font-size: .75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--muted);
+            margin-bottom: .5rem;
+        }
+        .hero-bar-item h4 {
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+        .hero-bar-item a { color: var(--text); text-decoration: none; transition: color .2s; }
+        .hero-bar-item a:hover { color: var(--accent); }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 3rem;
+            right: 5vw;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: .75rem;
+            opacity: 0;
+            animation: fadeIn 1s 1.2s forwards;
+        }
+        .scroll-hint span {
+            font-size: .7rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--muted);
+            writing-mode: vertical-rl;
+        }
+        .scroll-line {
+            width: 1px;
+            height: 60px;
+            background: linear-gradient(to bottom, var(--accent), transparent);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        /* ─── ABOUT ─── */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 6rem;
+            align-items: start;
+        }
+        .about-label {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(3rem, 5vw, 4.5rem);
+            color: var(--accent);
+            line-height: 1;
+            position: sticky;
+            top: calc(var(--nav-h) + 2rem);
+        }
+        .about-body p {
+            font-size: clamp(1.1rem, 2vw, 1.6rem);
+            font-weight: 300;
+            color: #bbb;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+        .about-body p strong { color: var(--text); font-weight: 600; }
+        .about-statement {
+            font-family: 'DM Serif Display', serif;
+            font-style: italic;
+            font-size: clamp(1.5rem, 3vw, 2.4rem) !important;
+            color: var(--accent) !important;
+            margin-top: 2rem !important;
+            font-weight: 400 !important;
+        }
+
+        /* ─── SCALE (INVERTED) ─── */
+        .scale-section {
+            background: var(--accent);
+            color: var(--bg);
+            padding: 10vh 5vw;
+            margin: 0 -5vw;
+            overflow: hidden;
+            position: relative;
+        }
+        .scale-section::before {
+            content: 'SCALE';
+            position: absolute;
+            right: -2vw; bottom: -3rem;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 22vw;
+            color: rgba(0,0,0,.06);
+            line-height: 1;
+            pointer-events: none;
+        }
+        .scale-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            color: var(--bg);
+            letter-spacing: 2px;
+            margin-bottom: 4rem;
+            opacity: .7;
+        }
+        .scale-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 3rem;
+        }
+        .scale-item {
+            border-left: 3px solid rgba(0,0,0,.25);
+            padding-left: 1.5rem;
+        }
+        .scale-num {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(3.5rem, 7vw, 6rem);
+            color: var(--bg);
+            line-height: 1;
+            display: block;
+        }
+        .scale-label {
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+            color: rgba(0,0,0,.55);
+            margin-top: .5rem;
+            display: block;
+        }
+
+        /* ─── EXPERIENCE ─── */
+        .exp-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 4rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .section-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            color: var(--accent);
+        }
+        .exp-count {
+            font-family: 'DM Serif Display', serif;
+            font-style: italic;
+            font-size: 1.1rem;
+            color: var(--muted);
+        }
+
+        .job {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            gap: 4rem;
+            padding: 3.5rem 0;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+            transition: padding-left .4s cubic-bezier(.22,1,.36,1);
+        }
+        .job::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 0;
+            background: var(--accent-dim);
+            transition: width .4s cubic-bezier(.22,1,.36,1);
+        }
+        .job:hover { padding-left: 1.5rem; }
+        .job:hover::before { width: 100%; }
+
+        .job-co {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.8rem;
+            color: var(--text);
+            line-height: 1;
+            margin-bottom: .5rem;
+        }
+        .job-role {
+            font-size: .8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--muted);
+            font-weight: 600;
+        }
+        .job-period {
+            font-size: .8rem;
+            color: var(--muted);
+            margin-top: .5rem;
+            font-style: italic;
+        }
+
+        .job-list { list-style: none; }
+        .job-list li {
+            position: relative;
+            padding-left: 2rem;
+            margin-bottom: 1.2rem;
+            font-size: 1.1rem;
+            color: #ccc;
+            line-height: 1.6;
+        }
+        .job-list li::before {
+            content: '→';
             position: absolute;
             left: 0;
             color: var(--accent);
             font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.3rem;
+            line-height: 1.1;
         }
 
-        /* Skills Marquee */
-        .marquee-container {
-            width: 100vw;
-            margin-left: -5vw; /* Negate container padding */
-            overflow: hidden;
-            background-color: var(--accent);
-            color: var(--bg-color);
-            padding: 2rem 0;
-            margin-top: 5vh;
-            transform: rotate(-2deg) scale(1.05);
+        /* ─── AUTOMATION ─── */
+        .auto-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
         }
-        .marquee {
-            display: flex;
-            white-space: nowrap;
-            animation: scroll 20s linear infinite;
-        }
-        .marquee span {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 4rem;
-            padding: 0 2rem;
-            text-transform: uppercase;
-        }
-        @keyframes scroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-
-        /* Footer / Contact */
-        footer {
-            padding: 15vh 0;
-            text-align: center;
-        }
-        .huge-link {
-            font-size: clamp(3rem, 10vw, 8rem);
-            font-family: 'Bebas Neue', sans-serif;
-            display: inline-block;
+        .auto-block {
+            background: var(--bg-2);
+            border: 1px solid var(--border);
+            padding: 3rem;
             position: relative;
+            overflow: hidden;
         }
-        .huge-link::after {
+        .auto-block::before {
             content: '';
             position: absolute;
-            width: 100%;
-            height: 4px;
-            bottom: 10%;
-            left: 0;
-            background-color: var(--accent);
-            transform: scaleX(0);
-            transform-origin: bottom right;
-            transition: transform 0.4s cubic-bezier(0.86, 0, 0.07, 1);
+            top: 0; left: 0;
+            width: 3px; height: 100%;
+            background: var(--accent);
         }
-        .huge-link:hover::after {
-            transform: scaleX(1);
-            transform-origin: bottom left;
+        .auto-block p {
+            font-size: 1.15rem;
+            color: #bbb;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+        .auto-block p strong { color: var(--accent); }
+        .auto-stat {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(4rem, 8vw, 6.5rem);
+            color: var(--text);
+            line-height: 1;
+            display: block;
+            margin-top: 2rem;
+        }
+        .auto-stat-label {
+            font-size: .9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--muted);
+            font-weight: 600;
+        }
+        .auto-statement {
+            font-family: 'DM Serif Display', serif;
+            font-style: italic;
+            font-size: clamp(1.8rem, 3.5vw, 3rem);
+            color: var(--text);
+            line-height: 1.3;
+        }
+        .auto-statement em { color: var(--accent); font-style: normal; }
+
+        /* ─── PRINCIPLE ─── */
+        .principle {
+            text-align: center;
+            padding: 14vh 0;
+            border-top: none !important;
+        }
+        .p-eyebrow {
+            font-size: .8rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--muted);
+            margin-bottom: 3rem;
+        }
+        .p-main {
+            font-family: 'DM Serif Display', serif;
+            font-style: italic;
+            font-size: clamp(2.5rem, 6vw, 5.5rem);
+            color: var(--text);
+            line-height: 1.15;
+            max-width: 1000px;
+            margin: 0 auto 2rem;
+        }
+        .p-sub {
+            font-size: clamp(1.1rem, 2vw, 1.5rem);
+            color: var(--muted);
+            max-width: 700px;
+            margin: 0 auto 1.5rem;
+            font-weight: 300;
+        }
+        .p-close {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            margin-top: 3rem;
+        }
+        .p-close span { color: var(--accent); }
+
+        /* ─── SKILLS MARQUEE ─── */
+        .marquee-wrap {
+            width: 100vw;
+            margin-left: calc(-5vw);
+            overflow: hidden;
+            background: var(--accent);
+            padding: 1.2rem 0;
+            transform: rotate(-1.5deg) scaleX(1.04);
+            margin-top: 2rem;
+        }
+        .marquee-track {
+            display: flex;
+            white-space: nowrap;
+            animation: ticker 28s linear infinite;
+        }
+        .marquee-track span {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.5rem;
+            color: var(--bg);
+            padding: 0 1.2rem;
+            letter-spacing: 2px;
         }
 
-        /* Scroll Animations (triggered by JS) */
+        /* ─── FOOTER ─── */
+        footer {
+            padding: 14vh 0 8vh;
+            text-align: center;
+            position: relative;
+        }
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 5vw; right: 5vw;
+            height: 1px;
+            background: var(--border);
+        }
+        .footer-sub {
+            font-size: .8rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--muted);
+            margin-bottom: 3rem;
+        }
+        .footer-cta {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(3.5rem, 10vw, 8.5rem);
+            display: inline-block;
+            color: var(--text);
+            text-decoration: none;
+            position: relative;
+            line-height: 1;
+            transition: color .3s;
+        }
+        .footer-cta::after {
+            content: '';
+            position: absolute;
+            bottom: .05em; left: 0; right: 0;
+            height: 4px;
+            background: var(--accent);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform .45s cubic-bezier(.86,0,.07,1);
+        }
+        .footer-cta:hover { color: var(--accent); }
+        .footer-cta:hover::after { transform: scaleX(1); transform-origin: left; }
+        .footer-email {
+            display: block;
+            font-size: 1.1rem;
+            color: var(--muted);
+            text-decoration: none;
+            margin-top: 2rem;
+            transition: color .2s;
+        }
+        .footer-email:hover { color: var(--text); }
+        .footer-note {
+            font-size: .75rem;
+            color: var(--muted);
+            margin-top: 6rem;
+            letter-spacing: 1px;
+        }
+
+        /* ─── REVEAL ANIMATION ─── */
         .reveal {
             opacity: 0;
-            transform: translateY(40px);
-            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+            transform: translateY(36px);
+            transition: opacity .85s cubic-bezier(.22,1,.36,1), transform .85s cubic-bezier(.22,1,.36,1);
         }
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
+        .reveal.visible { opacity: 1; transform: none; }
+
+        .stagger-1 { transition-delay: .05s; }
+        .stagger-2 { transition-delay: .15s; }
+        .stagger-3 { transition-delay: .25s; }
+        .stagger-4 { transition-delay: .35s; }
+        .stagger-5 { transition-delay: .45s; }
+
+        /* ─── KEYFRAMES ─── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to   { opacity: 1; transform: none; }
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        @keyframes ticker {
+            from { transform: translateX(0); }
+            to   { transform: translateX(-50%); }
+        }
+        @keyframes pulse {
+            0%,100% { opacity: .4; }
+            50%      { opacity: 1; }
         }
 
-        /* Responsive Design */
-        @media (max-width: 900px) {
-            .job {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-                padding: 2rem 0;
-            }
-            .job:hover {
-                padding-left: 0;
-            }
-            .hero-meta {
-                flex-direction: column;
-                align-items: flex-start;
-            }
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 960px) {
+            .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+            .about-label { position: static; margin-bottom: 1rem; }
+            .auto-grid { grid-template-columns: 1fr; }
+            .job { grid-template-columns: 1fr; gap: 1.5rem; }
+            .job:hover { padding-left: 0; }
+            .hero-bar { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+        }
+        @media (max-width: 600px) {
+            .nav-cta { display: none; }
         }
     </style>
 </head>
-<body class="noise">
+<body>
 
-    <!-- Custom Cursor Elements -->
-    <div class="cursor-dot" id="cursor-dot"></div>
-    <div class="cursor-outline" id="cursor-outline"></div>
+<div id="c-dot"></div>
+<div id="c-ring"></div>
 
-    <div class="container">
-        <!-- HERO SECTION -->
-        <header>
-            <h1 class="hero-name reveal">
-                <span>Nikita</span>
-                <span class="accent-text">Taskin</span>
-            </h1>
-            
-            <div class="hero-meta reveal">
-                <div class="meta-item">
-                    <p>Current Location</p>
-                    <h4>Vietnam (Remote-Ready)</h4>
-                </div>
-                <div class="meta-item">
-                    <p>Focus Areas</p>
-                    <h4>Operations / IT Support / CRM</h4>
-                </div>
-                <div class="meta-item">
-                    <p>Contact</p>
-                    <h4><a href="mailto:nikitataskin05@gmail.com" class="hover-target">nikitataskin05@gmail.com</a></h4>
-                </div>
+<!-- ═══ NAV ═══ -->
+<nav id="main-nav">
+    <div class="nav-logo">NT<span>.</span></div>
+    <ul class="nav-links">
+        <li><a href="#about" class="hov">About</a></li>
+        <li><a href="#scale" class="hov">Scale</a></li>
+        <li><a href="#experience" class="hov">Experience</a></li>
+        <li><a href="#automation" class="hov">Automation</a></li>
+    </ul>
+    <a href="mailto:nikitataskin05@gmail.com" class="nav-cta hov">Hire Me</a>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<header>
+    <div class="wrap hero-inner" style="position:relative;">
+        <p class="hero-eyebrow">Project & Operations Coordinator</p>
+        <h1 class="hero-name">
+            Nikita<br><em>Taskin</em>
+        </h1>
+        <p class="hero-tagline">
+            I bring <strong>structure</strong> to complexity —<br>
+            designing systems that make teams move faster.
+        </p>
+        <div class="hero-bar">
+            <div class="hero-bar-item">
+                <p>Location</p>
+                <h4>Vietnam · Remote-Ready</h4>
             </div>
-        </header>
-
-        <!-- SUMMARY SECTION -->
-        <section class="section reveal">
-            <h2 class="section-title">The Profile</h2>
-            <p class="summary-text">
-                Operations and client management professional with 3 years of experience bridging the gap between business coordination and technical processes. Proven track record of improving customer experience, maintaining complex CRM systems (Bitrix, AmoCRM), and optimizing operational workflows. Currently expanding my technical toolkit with Python to bring a data-driven approach to task automation.
-            </p>
-        </section>
-
-        <!-- EXPERIENCE SECTION -->
-        <section class="section">
-            <h2 class="section-title reveal">Professional Experience</h2>
-
-            <div class="job reveal">
-                <div class="job-meta">
-                    <h3>Azimut</h3>
-                    <p>Project Coordinator</p>
-                    <p>Jul 2025 – Jan 2026</p>
-                </div>
-                <div class="job-details">
-                    <ul>
-                        <li>Coordinated renovation project activities, ensuring completion within planned timelines.</li>
-                        <li>Maintained CRM (Bitrix) with up-to-date project statuses and technical documentation.</li>
-                        <li>Prepared and organized project documentation including contracts and proposals.</li>
-                        <li>Facilitated communication between clients, contractors, and internal teams to resolve issues efficiently.</li>
-                    </ul>
-                </div>
+            <div class="hero-bar-item">
+                <p>Speciality</p>
+                <h4>Workflows & Execution</h4>
             </div>
-
-            <div class="job reveal">
-                <div class="job-meta">
-                    <h3>PhysX School</h3>
-                    <p>Sales Project Coordinator</p>
-                    <p>Dec 2024 – May 2025</p>
-                </div>
-                <div class="job-details">
-                    <ul>
-                        <li>Orchestrated client onboarding and engagement using AmoCRM, increasing conversion efficiency.</li>
-                        <li>Tracked and analyzed customer interactions to improve lead follow-ups and retention.</li>
-                        <li>Streamlined communication flow between customers and instructors for enhanced satisfaction.</li>
-                        <li>Designed personalized outreach that contributed to higher program enrollment.</li>
-                    </ul>
-                </div>
+            <div class="hero-bar-item">
+                <p>Contact</p>
+                <h4><a href="mailto:nikitataskin05@gmail.com" class="hov">nikitataskin05@gmail.com</a></h4>
             </div>
-
-            <div class="job reveal">
-                <div class="job-meta">
-                    <h3>Lazertag Avanpost</h3>
-                    <p>Branch Manager</p>
-                    <p>Jun 2023 – Nov 2024</p>
-                </div>
-                <div class="job-details">
-                    <ul>
-                        <li>Managed daily operations for a high-traffic facility, improving service consistency and CX.</li>
-                        <li>Led a team of staff, delegating responsibilities and enhancing coordination to meet goals.</li>
-                        <li>Monitored financial performance by tracking revenue and optimizing cost control.</li>
-                        <li>Implemented operational improvements that increased team productivity and reduced bottlenecks.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="job reveal">
-                <div class="job-meta">
-                    <h3>Self Employed</h3>
-                    <p>Digital Marketer</p>
-                    <p>Jun 2023 – Present</p>
-                </div>
-                <div class="job-details">
-                    <ul>
-                        <li>Launched and optimized paid advertising campaigns via Meta Ads and Google Ads.</li>
-                        <li>Built websites and marketing funnels for digital product launches.</li>
-                        <li>Developed content strategies, structured content plans, and managed video production.</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-    </div>
-
-    <!-- SKILLS MARQUEE -->
-    <div class="marquee-container reveal">
-        <div class="marquee">
-            <!-- Duplicated for infinite scroll illusion -->
-            <span>Project Management • Bitrix24 • AmoCRM • Target Marketing • Process Optimization • Python (Learning) • Client Onboarding • Operations • </span>
-            <span>Project Management • Bitrix24 • AmoCRM • Target Marketing • Process Optimization • Python (Learning) • Client Onboarding • Operations • </span>
-            <span>Project Management • Bitrix24 • AmoCRM • Target Marketing • Process Optimization • Python (Learning) • Client Onboarding • Operations • </span>
+        </div>
+        <div class="scroll-hint">
+            <span>Scroll</span>
+            <div class="scroll-line"></div>
         </div>
     </div>
+</header>
 
-    <!-- FOOTER / CONTACT -->
-    <footer class="container reveal">
-        <h2 class="section-title" style="margin-bottom: 2rem;">Let's Connect</h2>
-        <a href="https://www.linkedin.com/in/nikita-taskin" target="_blank" class="huge-link hover-target">LINKEDIN PROFILE</a>
-        <br><br>
-        <a href="mailto:nikitataskin05@gmail.com" class="huge-link hover-target" style="font-size: clamp(2rem, 5vw, 4rem); color: var(--text-muted);">nikitataskin05@gmail.com</a>
-    </footer>
+<!-- ═══ ABOUT ═══ -->
+<section id="about">
+    <div class="wrap">
+        <div class="about-grid">
+            <div class="reveal">
+                <div class="about-label">About</div>
+            </div>
+            <div class="about-body">
+                <p class="reveal stagger-1">I operate at the intersection of <strong>projects, processes, and systems</strong>. My core strength is transforming high-load operational environments into structured, trackable workflows.</p>
+                <p class="reveal stagger-2">From coordinating dozens of parallel project streams to managing cross-functional communication, I focus on <strong>clarity, accountability, and execution discipline</strong>.</p>
+                <p class="reveal stagger-3 about-statement">"I don't just manage tasks — I design the system behind them."</p>
+            </div>
+        </div>
+    </div>
+</section>
 
-    <script>
-        // --- CUSTOM CURSOR LOGIC ---
-        const cursorDot = document.getElementById('cursor-dot');
-        const cursorOutline = document.getElementById('cursor-outline');
-        const hoverTargets = document.querySelectorAll('.hover-target, a');
+<!-- ═══ SCALE ═══ -->
+<div id="scale">
+    <div class="scale-section">
+        <div style="max-width:1400px; margin:0 auto;">
+            <p class="scale-title">Working at Scale</p>
+            <div class="scale-grid">
+                <div class="scale-item reveal stagger-1">
+                    <span class="scale-num" data-target="30" data-suffix="+">0</span>
+                    <span class="scale-label">Parallel project streams</span>
+                </div>
+                <div class="scale-item reveal stagger-2">
+                    <span class="scale-num" data-target="23">0</span>
+                    <span class="scale-label">Contractors & stakeholders</span>
+                </div>
+                <div class="scale-item reveal stagger-3">
+                    <span class="scale-num" data-target="50" data-suffix="+">0</span>
+                    <span class="scale-label">Incoming leads daily</span>
+                </div>
+                <div class="scale-item reveal stagger-4">
+                    <span class="scale-num" data-target="1000" data-suffix="+">0</span>
+                    <span class="scale-label">Customers per month</span>
+                </div>
+                <div class="scale-item reveal stagger-5">
+                    <span class="scale-num" data-target="40" data-suffix="+">0</span>
+                    <span class="scale-label">Automation bots deployed</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-        window.addEventListener('mousemove', function(e) {
-            const posX = e.clientX;
-            const posY = e.clientY;
+<!-- ═══ EXPERIENCE ═══ -->
+<section id="experience">
+    <div class="wrap">
+        <div class="exp-header reveal">
+            <h2 class="section-title">Experience</h2>
+            <span class="exp-count">3 companies · high-load environments</span>
+        </div>
 
-            // Use requestAnimationFrame for smooth performance
-            requestAnimationFrame(() => {
-                cursorDot.style.left = `${posX}px`;
-                cursorDot.style.top = `${posY}px`;
-                
-                // Add slight delay to outline for cool effect
-                setTimeout(() => {
-                    cursorOutline.style.left = `${posX}px`;
-                    cursorOutline.style.top = `${posY}px`;
-                }, 50);
-            });
-        });
+        <div class="job reveal">
+            <div>
+                <div class="job-co">Azimut</div>
+                <div class="job-role">Project Coordination</div>
+            </div>
+            <ul class="job-list">
+                <li>Coordinated ~30 parallel renovation project streams while collaborating with 23 contractors and stakeholders across multiple locations.</li>
+                <li>Maintained deadline discipline, structured reporting flows, and full status transparency within CRM systems — zero major delivery failures.</li>
+            </ul>
+        </div>
 
-        // Add hover effect when cursor is over links
-        hoverTargets.forEach(target => {
-            target.addEventListener('mouseenter', () => {
-                document.body.classList.add('hovering');
-            });
-            target.addEventListener('mouseleave', () => {
-                document.body.classList.remove('hovering');
-            });
-        });
+        <div class="job reveal">
+            <div>
+                <div class="job-co">PhysX School</div>
+                <div class="job-role">High-Load Operations</div>
+            </div>
+            <ul class="job-list">
+                <li>Managed 50+ incoming leads daily through AmoCRM, building pipeline visibility from scratch.</li>
+                <li>Formalized client handoff processes and reduced inter-department communication delays by restructuring workflow ownership.</li>
+            </ul>
+        </div>
 
-        // Disable custom cursor on touch devices
-        if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
-            cursorDot.style.display = 'none';
-            cursorOutline.style.display = 'none';
-            document.body.style.cursor = 'auto';
+        <div class="job reveal">
+            <div>
+                <div class="job-co">Lazertag Avanpost</div>
+                <div class="job-role">Team & Performance Management</div>
+            </div>
+            <ul class="job-list">
+                <li>Led a team of 7, managed recruitment, onboarding and scheduling while serving 1,000+ customers monthly without operational breakdowns.</li>
+                <li>Optimized internal task allocation that reduced bottlenecks and contributed to improved marketing execution cycles.</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ AUTOMATION ═══ -->
+<section id="automation">
+    <div class="wrap">
+        <h2 class="section-title reveal" style="margin-bottom:3rem;">Automation</h2>
+        <div class="auto-grid">
+            <div class="auto-block reveal stagger-1">
+                <p>Developed <strong>40+ Telegram bots</strong> using Python (aiogram, python-telegram-bot).</p>
+                <p>Automated up to <strong>70% of repetitive client interactions</strong> — reducing manual load dramatically.</p>
+                <p>Integrated <strong>ChatGPT API</strong> for intelligent, context-aware response handling.</p>
+                <p>Deployed and maintained solutions on <strong>Ubuntu VPS</strong> servers in production.</p>
+                <span class="auto-stat" data-target="70" data-suffix="%">0%</span>
+                <span class="auto-stat-label">Of client interactions automated</span>
+            </div>
+            <div class="reveal stagger-2">
+                <p class="auto-statement">
+                    Automation is not my role —<br>
+                    it is my <em>leverage</em>.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ PRINCIPLE ═══ -->
+<section class="principle">
+    <div class="wrap">
+        <p class="p-eyebrow reveal">Operating Philosophy</p>
+        <h2 class="p-main reveal stagger-1">I see projects as living systems.</h2>
+        <p class="p-sub reveal stagger-2">When roles are unclear and processes lack structure, complexity grows exponentially.</p>
+        <p class="p-sub reveal stagger-3">My work centers on alignment — aligning people, timelines, expectations.</p>
+        <p class="p-close reveal stagger-4">Structure is not restriction. <span>It is acceleration.</span></p>
+    </div>
+</section>
+
+<!-- ═══ SKILLS MARQUEE ═══ -->
+<div class="marquee-wrap">
+    <div class="marquee-track">
+        <span>Jira</span><span>·</span>
+        <span>Notion</span><span>·</span>
+        <span>Trello</span><span>·</span>
+        <span>Asana</span><span>·</span>
+        <span>Slack</span><span>·</span>
+        <span>Google Workspace</span><span>·</span>
+        <span>Bitrix24</span><span>·</span>
+        <span>AmoCRM</span><span>·</span>
+        <span>Python</span><span>·</span>
+        <span>Telegram Bot API</span><span>·</span>
+        <span>Ubuntu VPS</span><span>·</span>
+        <span>ChatGPT API</span><span>·</span>
+        <!-- duplicate for seamless loop -->
+        <span>Jira</span><span>·</span>
+        <span>Notion</span><span>·</span>
+        <span>Trello</span><span>·</span>
+        <span>Asana</span><span>·</span>
+        <span>Slack</span><span>·</span>
+        <span>Google Workspace</span><span>·</span>
+        <span>Bitrix24</span><span>·</span>
+        <span>AmoCRM</span><span>·</span>
+        <span>Python</span><span>·</span>
+        <span>Telegram Bot API</span><span>·</span>
+        <span>Ubuntu VPS</span><span>·</span>
+        <span>ChatGPT API</span><span>·</span>
+    </div>
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+    <div class="wrap">
+        <p class="footer-sub reveal">Ready to coordinate · Ready to build</p>
+        <a href="https://www.linkedin.com/in/nikita-taskin" target="_blank" class="footer-cta hov reveal stagger-1">LINKEDIN</a>
+        <a href="mailto:nikitataskin05@gmail.com" class="footer-email hov reveal stagger-2">nikitataskin05@gmail.com</a>
+        <p class="footer-note reveal stagger-3">© 2025 Nikita Taskin · Project & Operations Coordinator</p>
+    </div>
+</footer>
+
+<script>
+// ─── CURSOR ───
+const dot   = document.getElementById('c-dot');
+const ring  = document.getElementById('c-ring');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+
+;(function raf() {
+    rx += (mx - rx) * .18;
+    ry += (my - ry) * .18;
+    dot.style.transform  = `translate(${mx}px,${my}px) translate(-50%,-50%)`;
+    ring.style.transform = `translate(${rx}px,${ry}px) translate(-50%,-50%)`;
+    requestAnimationFrame(raf);
+})();
+
+document.querySelectorAll('.hov, a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+    el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+});
+
+if ('ontouchstart' in window) {
+    dot.style.display = ring.style.display = 'none';
+    document.body.style.cursor = 'auto';
+}
+
+// ─── NAV SCROLL STATE ───
+const nav = document.getElementById('main-nav');
+window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+}, { passive: true });
+
+// ─── SCROLL REVEAL ───
+const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+        if (e.isIntersecting) {
+            e.target.classList.add('visible');
+            observer.unobserve(e.target);
         }
+    });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
 
-        // --- SCROLL REVEAL LOGIC ---
-        const revealElements = document.querySelectorAll('.reveal');
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-        const revealOptions = {
-            threshold: 0.15, // Trigger when 15% of the element is visible
-            rootMargin: "0px 0px -50px 0px"
-        };
+// ─── COUNTER ANIMATION ───
+function animateCounter(el) {
+    const target = parseInt(el.dataset.target);
+    const suffix = el.dataset.suffix || '';
+    const duration = 1600;
+    const start = performance.now();
 
-        const revealOnScroll = new IntersectionObserver(function(entries, observer) {
-            entries.forEach(entry => {
-                if (!entry.isIntersecting) return;
-                
-                // Add class to trigger CSS transition
-                entry.target.classList.add('active');
-                
-                // Optional: Stop observing once revealed
-                observer.unobserve(entry.target);
-            });
-        }, revealOptions);
+    function ease(t) { return t < .5 ? 2*t*t : -1+(4-2*t)*t; }
 
-        revealElements.forEach(el => {
-            revealOnScroll.observe(el);
-        });
-        
-        // Trigger for elements already in view on load
-        setTimeout(() => {
-            revealElements.forEach(el => {
-                const rect = el.getBoundingClientRect();
-                if (rect.top < window.innerHeight) {
-                    el.classList.add('active');
-                }
-            });
-        }, 100);
-    </script>
+    function tick(now) {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const val = Math.round(ease(progress) * target);
+        el.textContent = val + suffix;
+        if (progress < 1) requestAnimationFrame(tick);
+        else el.textContent = target + suffix;
+    }
+    requestAnimationFrame(tick);
+}
+
+const counterObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+        if (e.isIntersecting) {
+            animateCounter(e.target);
+            counterObserver.unobserve(e.target);
+        }
+    });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('[data-target]').forEach(el => counterObserver.observe(el));
+
+// ─── INITIAL REVEAL (already in viewport) ───
+setTimeout(() => {
+    document.querySelectorAll('.reveal').forEach(el => {
+        const r = el.getBoundingClientRect();
+        if (r.top < window.innerHeight * 0.95) el.classList.add('visible');
+    });
+}, 120);
+</script>
 </body>
 </html>
