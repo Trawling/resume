@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nikita Taskin | Operations & Tech</title>
+    
+    <!-- Unique Fonts: Bebas Neue for massive impact, Manrope for high readability -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* CSS Variables for Cohesive Theme */
+        :root {
+            --bg-color: #0a0a0a;
+            --text-main: #f4f4f0;
+            --text-muted: #888888;
+            --accent: #ccff00; /* Neon Chartreuse for high-tech/energy feel */
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Reset & Base Setup */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none; /* Hide default cursor for custom one */
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Manrope', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Noise Texture Overlay */
+        .noise::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0.04;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* Custom Cursor */
+        .cursor-dot, .cursor-outline {
+            position: fixed;
+            top: 0; left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 9999;
+            pointer-events: none;
+        }
+        .cursor-dot {
+            width: 8px; height: 8px;
+            background-color: var(--accent);
+        }
+        .cursor-outline {
+            width: 40px; height: 40px;
+            border: 1px solid var(--accent);
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        }
+        /* Hover state for links */
+        body.hovering .cursor-outline {
+            width: 60px; height: 60px;
+            background-color: rgba(204, 255, 0, 0.1);
+            border-color: transparent;
+        }
+
+        /* Typography */
+        h1, h2, h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: normal;
+        }
+
+        a {
+            color: var(--text-main);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        a:hover {
+            color: var(--accent);
+        }
+
+        /* Layout */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 5vw;
+        }
+
+        header {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            padding-top: 10vh;
+        }
+
+        /* Hero Typography */
+        .hero-name {
+            font-size: clamp(4rem, 15vw, 12rem);
+            line-height: 0.85;
+            color: var(--text-main);
+            margin-bottom: 2rem;
+        }
+        .hero-name span {
+            display: block;
+        }
+        .hero-name .accent-text {
+            color: var(--accent);
+            padding-left: 10vw;
+        }
+
+        .hero-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 4rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 2rem;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .meta-item p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+        }
+        .meta-item h4 {
+            font-size: 1.5rem;
+            font-family: 'Manrope', sans-serif;
+            font-weight: 400;
+        }
+
+        /* Summary Section */
+        .section {
+            padding: 15vh 0;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .section-title {
+            font-size: clamp(2rem, 5vw, 4rem);
+            color: var(--accent);
+            margin-bottom: 4rem;
+        }
+
+        .summary-text {
+            font-size: clamp(1.2rem, 3vw, 2.5rem);
+            line-height: 1.4;
+            max-width: 1000px;
+            font-weight: 300;
+        }
+
+        /* Experience Grid */
+        .job {
+            display: grid;
+            grid-template-columns: 1fr 3fr;
+            gap: 2rem;
+            padding: 4rem 0;
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        .job:hover {
+            background: linear-gradient(90deg, rgba(204,255,0,0.03) 0%, transparent 100%);
+            padding-left: 2rem; /* Indent effect on hover */
+        }
+
+        .job-meta h3 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .job-meta p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+        .job-details ul {
+            list-style: none;
+        }
+        .job-details li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            color: #d1d1d1;
+        }
+        .job-details li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-family: 'Bebas Neue', sans-serif;
+        }
+
+        /* Skills Marquee */
+        .marquee-container {
+            width: 100vw;
+            margin-left: -5vw; /* Negate container padding */
+            overflow: hidden;
+            background-color: var(--accent);
+            color: var(--bg-color);
+            padding: 2rem 0;
+            margin-top: 5vh;
+            transform: rotate(-2deg) scale(1.05);
+        }
+        .marquee {
+            display: flex;
+            white-space: nowrap;
+            animation: scroll 20s linear infinite;
+        }
+        .marquee span {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 4rem;
+            padding: 0 2rem;
+            text-transform: uppercase;
+        }
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Footer / Contact */
+        footer {
+            padding: 15vh 0;
+            text-align: center;
+        }
+        .huge-link {
+            font-size: clamp(3rem, 10vw, 8rem);
+            font-family: 'Bebas Neue', sans-serif;
+            display: inline-block;
+            position: relative;
+        }
+        .huge-link::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            bottom: 10%;
+            left: 0;
+            background-color: var(--accent);
+            transform: scaleX(0);
+            transform-origin: bottom right;
+            transition: transform 0.4s cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        .huge-link:hover::after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+
+        /* Scroll Animations (triggered by JS) */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 900px) {
+            .job {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                padding: 2rem 0;
+            }
+            .job:hover {
+                padding-left: 0;
+            }
+            .hero-meta {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body class="noise">
+
+    <!-- Custom Cursor Elements -->
+    <div class="cursor-dot" id="cursor-dot"></div>
+    <div class="cursor-outline" id="cursor-outline"></div>
+
+    <div class="container">
+        <!-- HERO SECTION -->
+        <header>
+            <h1 class="hero-name reveal">
+                <span>Nikita</span>
+                <span class="accent-text">Taskin</span>
+            </h1>
+            
+            <div class="hero-meta reveal">
+                <div class="meta-item">
+                    <p>Current Location</p>
+                    <h4>Vietnam (Remote-Ready)</h4>
+                </div>
+                <div class="meta-item">
+                    <p>Focus Areas</p>
+                    <h4>Operations / IT Support / CRM</h4>
+                </div>
+                <div class="meta-item">
+                    <p>Contact</p>
+                    <h4><a href="mailto:nikitataskin05@gmail.com" class="hover-target">nikitataskin05@gmail.com</a></h4>
+                </div>
+            </div>
+        </header>
+
+        <!-- SUMMARY SECTION -->
+        <section class="section reveal">
+            <h2 class="section-title">The Profile</h2>
+            <p class="summary-text">
+                Operations and client management professional with 3 years of experience bridging the gap between business coordination and technical processes. Proven track record of improving customer experience, maintaining complex CRM systems (Bitrix, AmoCRM), and optimizing operational workflows. Currently expanding my technical toolkit with Python to bring a data-driven approach to task automation.
+            </p>
+        </section>
+
+        <!-- EXPERIENCE SECTION -->
+        <section class="section">
+            <h2 class="section-title reveal">Professional Experience</h2>
+
+            <div class="job reveal">
+                <div class="job-meta">
+                    <h3>Azimut</h3>
+                    <p>Project Coordinator</p>
+                    <p>Jul 2025 – Jan 2026</p>
+                </div>
+                <div class="job-details">
+                    <ul>
+                        <li>Coordinated renovation project activities, ensuring completion within planned timelines.</li>
+                        <li>Maintained CRM (Bitrix) with up-to-date project statuses and technical documentation.</li>
+                        <li>Prepared and organized project documentation including contracts and proposals.</li>
+                        <li>Facilitated communication between clients, contractors, and internal teams to resolve issues efficiently.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="job reveal">
+                <div class="job-meta">
+                    <h3>PhysX School</h3>
+                    <p>Sales Project Coordinator</p>
+                    <p>Dec 2024 – May 2025</p>
+                </div>
+                <div class="job-details">
+                    <ul>
+                        <li>Orchestrated client onboarding and engagement using AmoCRM, increasing conversion efficiency.</li>
+                        <li>Tracked and analyzed customer interactions to improve lead follow-ups and retention.</li>
+                        <li>Streamlined communication flow between customers and instructors for enhanced satisfaction.</li>
+                        <li>Designed personalized outreach that contributed to higher program enrollment.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="job reveal">
+                <div class="job-meta">
+                    <h3>Lazertag Avanpost</h3>
+                    <p>Branch Manager</p>
+                    <p>Jun 2023 – Nov 2024</p>
+                </div>
+                <div class="job-details">
+                    <ul>
+                        <li>Managed daily operations for a high-traffic facility, improving service consistency and CX.</li>
+                        <li>Led a team of staff, delegating responsibilities and enhancing coordination to meet goals.</li>
+                        <li>Monitored financial performance by tracking revenue and optimizing cost control.</li>
+                        <li>Implemented operational improvements that increased team productivity and reduced bottlenecks.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="job reveal">
+                <div class="job-meta">
+                    <h3>Self Employed</h3>
+                    <p>Digital Marketer</p>
+                    <p>Jun 2023 – Present</p>
+                </div>
+                <div class="job-details">
+                    <ul>
+                        <li>Launched and optimized paid advertising campaigns via Meta Ads and Google Ads.</li>
+                        <li>Built websites and marketing funnels for digital product launches.</li>
+                        <li>Developed content strategies, structured content plans, and managed video production.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- SKILLS MARQUEE -->
+    <div class="marquee-container reveal">
+        <div class="marquee">
+            <!-- Duplicated for infinite scroll illusion -->
+            <span>Project Management • Bitrix24 • AmoCRM • Target Marketing • Process Optimization • Python (Learning) • Client Onboarding • Operations • </span>
+            <span>Project Management • Bitrix24 • AmoCRM • Target Marketing • Process Optimization • Python (Learning) • Client Onboarding • Operations • </span>
+            <span>Project Management • Bitrix24 • AmoCRM • Target Marketing • Process Optimization • Python (Learning) • Client Onboarding • Operations • </span>
+        </div>
+    </div>
+
+    <!-- FOOTER / CONTACT -->
+    <footer class="container reveal">
+        <h2 class="section-title" style="margin-bottom: 2rem;">Let's Connect</h2>
+        <a href="https://www.linkedin.com/in/nikita-taskin" target="_blank" class="huge-link hover-target">LINKEDIN PROFILE</a>
+        <br><br>
+        <a href="mailto:nikitataskin05@gmail.com" class="huge-link hover-target" style="font-size: clamp(2rem, 5vw, 4rem); color: var(--text-muted);">nikitataskin05@gmail.com</a>
+    </footer>
+
+    <script>
+        // --- CUSTOM CURSOR LOGIC ---
+        const cursorDot = document.getElementById('cursor-dot');
+        const cursorOutline = document.getElementById('cursor-outline');
+        const hoverTargets = document.querySelectorAll('.hover-target, a');
+
+        window.addEventListener('mousemove', function(e) {
+            const posX = e.clientX;
+            const posY = e.clientY;
+
+            // Use requestAnimationFrame for smooth performance
+            requestAnimationFrame(() => {
+                cursorDot.style.left = `${posX}px`;
+                cursorDot.style.top = `${posY}px`;
+                
+                // Add slight delay to outline for cool effect
+                setTimeout(() => {
+                    cursorOutline.style.left = `${posX}px`;
+                    cursorOutline.style.top = `${posY}px`;
+                }, 50);
+            });
+        });
+
+        // Add hover effect when cursor is over links
+        hoverTargets.forEach(target => {
+            target.addEventListener('mouseenter', () => {
+                document.body.classList.add('hovering');
+            });
+            target.addEventListener('mouseleave', () => {
+                document.body.classList.remove('hovering');
+            });
+        });
+
+        // Disable custom cursor on touch devices
+        if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+            cursorDot.style.display = 'none';
+            cursorOutline.style.display = 'none';
+            document.body.style.cursor = 'auto';
+        }
+
+        // --- SCROLL REVEAL LOGIC ---
+        const revealElements = document.querySelectorAll('.reveal');
+
+        const revealOptions = {
+            threshold: 0.15, // Trigger when 15% of the element is visible
+            rootMargin: "0px 0px -50px 0px"
+        };
+
+        const revealOnScroll = new IntersectionObserver(function(entries, observer) {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                
+                // Add class to trigger CSS transition
+                entry.target.classList.add('active');
+                
+                // Optional: Stop observing once revealed
+                observer.unobserve(entry.target);
+            });
+        }, revealOptions);
+
+        revealElements.forEach(el => {
+            revealOnScroll.observe(el);
+        });
+        
+        // Trigger for elements already in view on load
+        setTimeout(() => {
+            revealElements.forEach(el => {
+                const rect = el.getBoundingClientRect();
+                if (rect.top < window.innerHeight) {
+                    el.classList.add('active');
+                }
+            });
+        }, 100);
+    </script>
+</body>
+</html>
