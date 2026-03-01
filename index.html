@@ -78,10 +78,10 @@
 
             <!-- Добавлен блок с двумя кнопками -->
             <div class="mt-12 flex flex-col sm:flex-row justify-center items-center gap-4 animate-on-scroll delay-300">
-                <a href="mailto:nikitataskin05@gmail.com" class="bg-white text-black px-8 py-3 rounded-full text-sm font-semibold hover:scale-105 transition-transform duration-300">
+                <!-- Обновленная кнопка Email: добавлена тема и копирование в буфер -->
+                <a href="mailto:nikitataskin05@gmail.com?subject=Project%20Inquiry" onclick="copyEmail()" class="bg-white text-black px-8 py-3 rounded-full text-sm font-semibold hover:scale-105 transition-transform duration-300">
                     Get in Touch
                 </a>
-                <!-- Обновленная кнопка Download CV -->
                 <a href="./Nikita_Taskin_CV.pdf" download="Nikita_Taskin_CV.pdf" class="border border-white/20 text-white px-8 py-3 rounded-full text-sm font-semibold hover:bg-white hover:text-black transition-all duration-300 flex items-center gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                     Download CV
@@ -90,7 +90,8 @@
 
             <!-- Иконки соцсетей на главном экране (под кнопками) -->
             <div class="mt-8 text-gray-500 text-sm flex justify-center space-x-8 animate-on-scroll delay-300">
-                <a href="mailto:nikitataskin05@gmail.com" class="hover:text-white transition-colors flex items-center gap-2">
+                <!-- Обновленная иконка Email -->
+                <a href="mailto:nikitataskin05@gmail.com?subject=Project%20Inquiry" onclick="copyEmail()" class="hover:text-white transition-colors flex items-center gap-2 cursor-pointer">
                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12.713l11.985-8.713h-23.97l11.985 8.713zm0 2.574l-12-8.727v11.44h24v-11.44l-12 8.727z"/></svg>
                     <span class="hidden sm:inline">Email</span>
                 </a>
@@ -339,14 +340,15 @@
                 Open to Project Coordinator, Junior Project Manager, and Operations roles in international environments.
             </p>
             <div class="animate-on-scroll delay-200">
-                <a href="mailto:nikitataskin05@gmail.com" class="inline-block bg-white text-black font-semibold px-8 py-4 rounded-full hover:scale-105 transition-transform duration-300">
+                <!-- Обновленная кнопка в футере -->
+                <a href="mailto:nikitataskin05@gmail.com?subject=Project%20Inquiry" onclick="copyEmail()" class="inline-block bg-white text-black font-semibold px-8 py-4 rounded-full hover:scale-105 transition-transform duration-300">
                     Get in Touch
                 </a>
             </div>
             
-            <!-- Добавлены SVG иконки для соцсетей -->
             <div class="mt-32 text-gray-500 text-sm flex justify-center space-x-8 animate-on-scroll">
-                <a href="mailto:nikitataskin05@gmail.com" class="hover:text-white transition-colors flex items-center gap-2">
+                <!-- Обновленная иконка в футере -->
+                <a href="mailto:nikitataskin05@gmail.com?subject=Project%20Inquiry" onclick="copyEmail()" class="hover:text-white transition-colors flex items-center gap-2 cursor-pointer">
                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12.713l11.985-8.713h-23.97l11.985 8.713zm0 2.574l-12-8.727v11.44h24v-11.44l-12 8.727z"/></svg>
                     <span class="hidden sm:inline">Email</span>
                 </a>
@@ -366,8 +368,39 @@
         </div>
     </section>
 
-    <!-- JavaScript for Scroll Animations -->
+    <!-- Уведомление об успешном копировании Email -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-[#222] border border-white/10 text-white px-6 py-3 rounded-full text-sm font-medium shadow-2xl transform translate-y-20 opacity-0 transition-all duration-300 z- pointer-events-none flex items-center gap-2">
+        <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+        Email copied to clipboard!
+    </div>
+
+    <!-- JavaScript for Scroll Animations and Copy Email -->
     <script>
+        // Функция для копирования email и показа уведомления
+        function copyEmail() {
+            const email = "nikitataskin05@gmail.com";
+            
+            // Создаем временный элемент для копирования текста
+            const tempInput = document.createElement("input");
+            tempInput.value = email;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+
+            // Показываем уведомление (toast)
+            const toast = document.getElementById("toast");
+            if (toast) {
+                toast.classList.remove("translate-y-20", "opacity-0");
+                
+                // Прячем уведомление через 3 секунды
+                setTimeout(() => {
+                    toast.classList.add("translate-y-20", "opacity-0");
+                }, 3000);
+            }
+        }
+
+        // Анимации при скролле
         document.addEventListener("DOMContentLoaded", function() {
             const observerOptions = {
                 root: null,
@@ -379,8 +412,6 @@
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('is-visible');
-                        // Optional: stop observing once animated to keep it visible
-                        // observer.unobserve(entry.target);
                     }
                 });
             }, observerOptions);
@@ -388,7 +419,7 @@
             const elements = document.querySelectorAll('.animate-on-scroll');
             elements.forEach(el => observer.observe(el));
 
-            // Counter animation
+            // Анимация чисел
             const counterObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
